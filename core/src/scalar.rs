@@ -1,18 +1,21 @@
-use core::ops::{Add, AddAssign, Mul, MulAssign, Neg};
-use subtle::Choice;
-use crunchy::unroll;
+use core::ops::{Add, AddAssign, Mul, MulAssign, Neg}; // 实现自定义结构体之间的 加，乘，取反（前面加负号）。
+use subtle::Choice; // u8 的封装，可以实现 AND, OR, XOR, NOT等运算符。
+use crunchy::unroll; // 内联展开常数循环逻辑，提供性能。
 
+// secpk1 曲线的 n 值。n 代表该曲线在有限域里面点的个数。
 const SECP256K1_N: [u32; 8] = [
     0xD0364141, 0xBFD25E8C, 0xAF48A03B, 0xBAAEDCE6,
     0xFFFFFFFE, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF
 ];
 
-const SECP256K1_N_C_0: u32 = !SECP256K1_N[0] + 1;
+const SECP256K1_N_C_0: u32 = !SECP256K1_N[0] + 1; // ！表示：对u32的二进制格式取反（0->1，1->0） u32 的加运算不能溢出
 const SECP256K1_N_C_1: u32 = !SECP256K1_N[1];
 const SECP256K1_N_C_2: u32 = !SECP256K1_N[2];
 const SECP256K1_N_C_3: u32 = !SECP256K1_N[3];
 const SECP256K1_N_C_4: u32 = 1;
 
+// https://my.oschina.net/u/4393301/blog/3901619
+// bip66 bip62
 const SECP256K1_N_H_0: u32 = 0x681B20A0;
 const SECP256K1_N_H_1: u32 = 0xDFE92F46;
 const SECP256K1_N_H_2: u32 = 0x57A4501D;
